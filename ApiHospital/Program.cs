@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Hosting;
 using ApiHospital;
 
 var builder = WebApplication.CreateBuilder(args);
