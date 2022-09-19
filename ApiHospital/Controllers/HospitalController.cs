@@ -26,7 +26,7 @@ namespace ApiHospital.Controllers
             await dbContext.SaveChangesAsync();
             return Ok();
         }
-        [HttpPut("{id:Int}")]
+        [HttpPut("{id:int}")]
         public async Task<ActionResult> Put(Hospital hospital, int id)
         {
             if (hospital.Id != id)
@@ -37,7 +37,7 @@ namespace ApiHospital.Controllers
             await dbContext.SaveChangesAsync();
             return Ok();
         }
-        [HttpDelete("{id: Int}")]
+        [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)
         {
             var hospitalDelete = await dbContext.Hospitales.FindAsync(id);

@@ -5,8 +5,7 @@ namespace ApiHospital.Controllers.Entidades
 {
     public class Paciente
     {
-        
-        public int HospitalId { get; set; }
+        [ForeignKey("Id")]
         [Key]
         public int IdPaciente { get; set; }
         public string Nombre { get; set; }
