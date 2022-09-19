@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ApiHospital.Controllers.Entidades
 {
@@ -6,7 +7,8 @@ namespace ApiHospital.Controllers.Entidades
     {
         [Key]
         public int Id { get; set; }
-        [Required]
+        public int IdHospital { get; set; }
         public String NombreHospital { get; set; }
+        public Paciente Paciente { get; set; }
     }
 }

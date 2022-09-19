@@ -29,7 +29,7 @@ namespace ApiHospital.Controllers
         [HttpPut("{id:int}")]
         public async Task<ActionResult> Put(Hospital hospital, int id)
         {
-            if (hospital.Id != id)
+            if (hospital.IdHospital != id)
             {
                 return BadRequest("El id del no coincide con el de la url.");
             }

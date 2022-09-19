@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ApiHospital.Controllers
 {
+    [ApiController]
+    [Route("/Paciente")]
     public class PacienteController: ControllerBase
     {
         public PacienteController(ApplicationDbContext dbContext)
