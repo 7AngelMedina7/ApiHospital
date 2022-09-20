@@ -29,6 +29,16 @@ namespace ApiHospital.Controllers
         [HttpPut("{id:int}")]
         public async Task<ActionResult> Put(Hospital hospital, int id)
         {
+            //Verificar si los datos puestos son nulos o vacios
+            if (String.IsNullOrEmpty(hospital.NombreHospital))
+            {
+                if (hospital.NombreHospital == "string")
+                {
+                    return BadRequest("EL nombre del Hospital no debe quedar vacio");
+                }
+
+                return BadRequest("Debe introducir todos los datos");
+            }
             if (hospital.IdHospital != id)
             {
                 return BadRequest("El id del no coincide con el de la url.");

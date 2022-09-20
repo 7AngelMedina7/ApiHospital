@@ -29,10 +29,7 @@ namespace ApiHospital.Controllers
         [HttpPut("{id:int}")]
         public async Task<ActionResult> Put(Paciente paciente, int id)
         {
-            if (paciente.IdPaciente != id)
-            {
-                return BadRequest("El id del no coincide con el de la url.");
-            }
+            
             dbContext.Update(paciente);
             await dbContext.SaveChangesAsync();
             return Ok();

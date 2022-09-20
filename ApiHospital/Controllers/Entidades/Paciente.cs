@@ -6,10 +6,12 @@ namespace ApiHospital.Controllers.Entidades
     public class Paciente
     {
         [Key]
-        public int Id { get; set; }
         public int IdPaciente { get; set; }
-        public string Names { get; set; }
+        public int HospitalId { get; set; } 
+        public string Nombre { get; set; }
         public int Edad { get; set; }
+        public decimal peso { get; set; }
+        public decimal estatura { get; set; }
 
     }
 }
