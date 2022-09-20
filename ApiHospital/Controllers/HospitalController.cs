@@ -22,6 +22,10 @@ namespace ApiHospital.Controllers
         [HttpPost]
         public async Task<ActionResult> Post(Hospital hospital)
         {
+            if (hospital.NombreHospital=="string"|| String.IsNullOrEmpty(hospital.NombreHospital))
+            {
+                return BadRequest("El Nombre del Hospital no debe estar vacio");
+            }
             dbContext.Add(hospital);
             await dbContext.SaveChangesAsync();
             return Ok();
