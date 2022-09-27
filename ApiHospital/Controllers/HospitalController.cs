@@ -17,7 +17,8 @@ namespace ApiHospital.Controllers
         [HttpGet]
         public async Task<ActionResult<List<Hospital>>> Get(int id)
         {
-            return await dbContext.Hospitales.ToListAsync();
+
+            return await dbContext.Hospitales.Include(a=> a.Pacientes).ToListAsync();
         }
         [HttpPost]
         public async Task<ActionResult> Post(Hospital hospital)
