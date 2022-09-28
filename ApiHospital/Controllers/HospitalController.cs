@@ -1,6 +1,7 @@
 ﻿using ApiHospital.Controllers.Entidades;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Metadata.Ecma335;
 
 namespace ApiHospital.Controllers
 {
@@ -15,14 +16,19 @@ namespace ApiHospital.Controllers
 
         public ApplicationDbContext dbContext { get; }
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<List<Hospital>>> Get(int id)
+        public async Task<ActionResult<Hospital>> GetById(int id)
         {
 
-            return await dbContext.Hospitales.Include(a => a.Pacientes).ToListAsync();
+            return await dbContext.Hospitales.Include(a => a.Pacientes).FirstOrDefaultAsync(a => a.IdHospital == id);
         }
 
+        [HttpGet("FirstData")]
+        public async Task<ActionResult<Hospital>> Primero()
+        {
+            return await. 
+        }   
         [HttpGet]
-        public async Task<ActionResult<List<Hospital>>> Get(int id)
+        public async Task<ActionResult<List<Hospital>>> Get()
         {
 
             return await dbContext.Hospitales.Include(a=> a.Pacientes).ToListAsync();

@@ -10,6 +10,7 @@ namespace ApiHospital.Controllers.Entidades
         public int HospitalId { get; set; }
 
         [Required(ErrorMessage ="El Nombre es obligatorio")]
+        
         [StringLength(60,MinimumLength =10,ErrorMessage="Introduce un nombre valido")]
         public string Nombre { get; set; }
 
