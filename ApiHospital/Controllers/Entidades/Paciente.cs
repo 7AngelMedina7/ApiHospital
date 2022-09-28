@@ -6,16 +6,15 @@ namespace ApiHospital.Controllers.Entidades
     {
         [Key]
         public int IdPaciente { get; set; }
-        [MaxLength(100,ErrorMessage ="Introduce un Id Valido")]
         [Required(ErrorMessage ="El Id del Paciente es obligatorio")]
         public int HospitalId { get; set; }
 
         [Required(ErrorMessage ="El Nombre es obligatorio")]
-        [DataType(DataType.Text, ErrorMessage ="El nombre debe de ser texto")]
+        [StringLength(60,MinimumLength =10,ErrorMessage="Introduce un nombre valido")]
         public string Nombre { get; set; }
 
         [Required(ErrorMessage ="La edad es obligatoria")]
-        [Range(0,100,ErrorMessage ="Introduce una edad valida")]
+        [Range(1,100,ErrorMessage ="Introduce una edad valida")]
         public int Edad { get; set; }
 
         [Required(ErrorMessage ="El peso es Obligatorio")]

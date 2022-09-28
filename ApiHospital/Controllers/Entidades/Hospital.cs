@@ -12,7 +12,7 @@ namespace ApiHospital.Controllers.Entidades
 
         public String NombreHospital { get; set; }
 
-        [AllowNull]
+        //[AllowNull]
 
         public List<Paciente> Pacientes { get; set; }
     }
