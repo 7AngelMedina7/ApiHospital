@@ -1,6 +1,7 @@
 ﻿using ApiHospital.Controllers.Entidades;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Metadata.Ecma335;
 
 namespace ApiHospital.Controllers
 {
@@ -14,18 +15,46 @@ namespace ApiHospital.Controllers
         }
 
         public ApplicationDbContext dbContext { get; }
-        [HttpGet]
-        public async Task<ActionResult<List<Hospital>>> Get(int id)
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<Hospital>> GetById(int id)
         {
-            return await dbContext.Hospitales.ToListAsync();
+            var idAux= await dbContext.Hospitales.Include(a => a.Pacientes).FirstOrDefaultAsync(a => a.IdHospital == id);
+            if (idAux == null)
+            {
+                return NotFound();
+            }
+            return Ok(idAux);
         }
-        [HttpPost]
+        [HttpGet("{nombreHospital}")]
+        public async Task<ActionResult<Hospital>> Get(string nombreHospital)
+        {
+            var nombreAux= await dbContext.Hospitales.Include(a => a.Pacientes).FirstOrDefaultAsync(a => a.NombreHospital.Contains(nombreHospital));
+            if (nombreAux == null)
+            {
+                return NotFound();
+            }
+            return Ok(nombreAux);
+        }
+        [HttpGet("{id:int}/{nombreHospital?}")]
+        public async Task<ActionResult<Hospital>> Get(int id, string nombreHospital)
+        {
+            var aux = await dbContext.Hospitales.Include(a => a.Pacientes).FirstOrDefaultAsync(a => a.IdHospital==id || a.NombreHospital.Contains(nombreHospital));
+            if (aux == null)
+            {
+                return NotFound();
+            }
+            return Ok(aux);
+        }
+        [HttpGet]
+        public async Task<ActionResult<List<Hospital>>> Get()
+        {
+
+            return await dbContext.Hospitales.Include(a=> a.Pacientes).ToListAsync();
+        }
+        [HttpPost] 
         public async Task<ActionResult> Post(Hospital hospital)
         {
-            if (hospital.NombreHospital=="string"|| String.IsNullOrEmpty(hospital.NombreHospital))
-            {
-                return BadRequest("El Nombre del Hospital no debe estar vacio");
-            }
+            
             dbContext.Add(hospital);
             await dbContext.SaveChangesAsync();
             return Ok();
@@ -33,16 +62,8 @@ namespace ApiHospital.Controllers
         [HttpPut("{id:int}")]
         public async Task<ActionResult> Put(Hospital hospital, int id)
         {
-            //Verificar si los datos puestos son nulos o vacios
-            if (String.IsNullOrEmpty(hospital.NombreHospital))
-            {
-                if (hospital.NombreHospital == "string")
-                {
-                    return BadRequest("EL nombre del Hospital no debe quedar vacio");
-                }
-
-                return BadRequest("Debe introducir todos los datos");
-            }
+           
+           
             if (hospital.IdHospital != id)
             {
                 return BadRequest("El id del no coincide con el de la url.");

@@ -22,33 +22,6 @@ namespace ApiHospital.Controllers
         [HttpPost]
         public async Task<ActionResult> Post(Paciente paciente)
         {
-            if (paciente.HospitalId==0||paciente.estatura==0||paciente.Edad==0||paciente.Nombre== "string" || paciente.peso==0)
-            {
-                if (paciente.Nombre == "string")
-                {
-                    return BadRequest("EL nombre del Hospital no debe quedar vacio");
-                }
-                else if (paciente.HospitalId == 0)
-                {
-                    return BadRequest("Debe introducir HospitalId");
-                }
-                else if (String.IsNullOrEmpty(paciente.Nombre)||paciente.Nombre=="string")
-                {
-                    return BadRequest("Debe Introducir el Nombre del paciente");
-                }
-                else if (paciente.Edad == 0)
-                {
-                    return BadRequest("Debe introducir el parametro Edad");
-                }
-                else if (paciente.peso == 0)
-                {
-                    return BadRequest("Debe introducir el parametro Peso");
-                }
-                else if (paciente.estatura == 0)
-                {
-                    return BadRequest("Debe introducir el parametro Estatura");
-                }
-            }
             dbContext.Add(paciente);
             await dbContext.SaveChangesAsync();
             return Ok();
@@ -56,32 +29,8 @@ namespace ApiHospital.Controllers
         [HttpPut("{id:int}")]
         public async Task<ActionResult> Put(Paciente paciente, int id)
         {
-            if (paciente.Nombre == "string")
-            {
-                return BadRequest("EL nombre del Hospital no debe quedar vacio");
-            }
-            else if (paciente.HospitalId == 0)
-            {
-                return BadRequest("Debe introducir HospitalId");
-            }
-            else if (String.IsNullOrEmpty(paciente.Nombre))
-            {
-                return BadRequest("Debe Introducir el Nombre del paciente");
-            }
-            else if (paciente.Edad == 0)
-            {
-                return BadRequest("Debe introducir el parametro Edad");
-            }
-            else if (paciente.peso == 0)
-            {
-                return BadRequest("Debe introducir el parametro Peso");
-            }
-            else if (paciente.estatura == 0)
-            {
-                return BadRequest("Debe introducir el parametro Estatura");
-            }
             
-            else if (paciente.IdPaciente != id)
+            if (paciente.IdPaciente != id)
             {
                 return BadRequest("El id del no coincide con el de la url.");
             }
