@@ -10,7 +10,7 @@ namespace ApiHospital.Controllers.Entidades
         public int IdHospital { get; set; }
         [Required(ErrorMessage ="El Nombre del hospital es obligatorio")]
 
-        public String NombreHospital { get; set; }
+        public string NombreHospital { get; set; }
 
         //[AllowNull]
 
