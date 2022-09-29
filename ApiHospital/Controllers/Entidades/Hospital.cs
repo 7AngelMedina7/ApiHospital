@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 
 namespace ApiHospital.Controllers.Entidades
 {
@@ -9,11 +8,8 @@ namespace ApiHospital.Controllers.Entidades
 
         public int IdHospital { get; set; }
         [Required(ErrorMessage ="El Nombre del hospital es obligatorio")]
-
+        [StringLength(70, MinimumLength = 5, ErrorMessage = "Introduce un nombre valido")]
         public string NombreHospital { get; set; }
-
-        //[AllowNull]
-
         public List<Paciente> Pacientes { get; set; }
     }
 }

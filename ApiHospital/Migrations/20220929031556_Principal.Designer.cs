@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApiHospital.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220919234838_Inicial")]
-    partial class Inicial
+    [Migration("20220929031556_Principal")]
+    partial class Principal
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -32,6 +32,7 @@ namespace ApiHospital.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdHospital"), 1L, 1);
 
                     b.Property<string>("NombreHospital")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("IdHospital");
@@ -54,7 +55,9 @@ namespace ApiHospital.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Nombre")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
 
                     b.Property<decimal>("estatura")
                         .HasColumnType("decimal(18,2)");

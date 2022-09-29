@@ -4,7 +4,7 @@
 
 namespace ApiHospital.Migrations
 {
-    public partial class Inicial : Migration
+    public partial class Principal : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -14,7 +14,7 @@ namespace ApiHospital.Migrations
                 {
                     IdHospital = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    NombreHospital = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    NombreHospital = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -28,7 +28,7 @@ namespace ApiHospital.Migrations
                     IdPaciente = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     HospitalId = table.Column<int>(type: "int", nullable: false),
-                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Nombre = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: false),
                     Edad = table.Column<int>(type: "int", nullable: false),
                     peso = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     estatura = table.Column<decimal>(type: "decimal(18,2)", nullable: false)

@@ -23,7 +23,7 @@ namespace ApiHospital.Controllers
             {
                 return NotFound();
             }
-            return idAux;
+            return Ok(idAux);
         }
         [HttpGet("{nombreHospital}")]
         public async Task<ActionResult<Hospital>> Get(string nombreHospital)
@@ -33,7 +33,7 @@ namespace ApiHospital.Controllers
             {
                 return NotFound();
             }
-            return nombreAux;
+            return Ok(nombreAux);
         }
         [HttpGet("{id:int}/{nombreHospital?}")]
         public async Task<ActionResult<Hospital>> Get(int id, string nombreHospital)
@@ -43,7 +43,7 @@ namespace ApiHospital.Controllers
             {
                 return NotFound();
             }
-            return aux;
+            return Ok(aux);
         }
         [HttpGet]
         public async Task<ActionResult<List<Hospital>>> Get()
@@ -51,7 +51,7 @@ namespace ApiHospital.Controllers
 
             return await dbContext.Hospitales.Include(a=> a.Pacientes).ToListAsync();
         }
-        [HttpPost]
+        [HttpPost] 
         public async Task<ActionResult> Post(Hospital hospital)
         {
             

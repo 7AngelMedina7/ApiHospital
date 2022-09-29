@@ -50,12 +50,12 @@ namespace ApiHospital.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("HospitalId")
-                        .HasMaxLength(100)
                         .HasColumnType("int");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
 
                     b.Property<decimal>("estatura")
                         .HasColumnType("decimal(18,2)");
