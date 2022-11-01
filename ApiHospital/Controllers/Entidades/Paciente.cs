@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ApiHospital.Validaciones;
+using System.ComponentModel.DataAnnotations;
 
 namespace ApiHospital.Controllers.Entidades
 {
@@ -10,8 +11,8 @@ namespace ApiHospital.Controllers.Entidades
         public int HospitalId { get; set; }
 
         [Required(ErrorMessage ="El Nombre es obligatorio")]
-        
         [StringLength(60,MinimumLength =10,ErrorMessage="Introduce un nombre valido")]
+        [PrimeraLetraMayuscula]
         public string Nombre { get; set; }
 
         [Required(ErrorMessage ="La edad es obligatoria")]
