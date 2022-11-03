@@ -54,7 +54,11 @@ namespace ApiHospital.Controllers
         [HttpPost] 
         public async Task<ActionResult> Post(Hospital hospital)
         {
-            
+            var existeNombre = await dbContext.Hospitales.AnyAsync(a => a.NombreHospital == hospital.NombreHospital);
+            if (existeNombre)
+            {
+                return BadRequest("Ya existe un hospital con el nombre proporcionado")
+            }
             dbContext.Add(hospital);
             await dbContext.SaveChangesAsync();
             return Ok();
