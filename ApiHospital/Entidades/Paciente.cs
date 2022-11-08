@@ -1,4 +1,5 @@
 ﻿using ApiHospital.Validaciones;
+using Microsoft.AspNetCore.Authorization;
 using System.ComponentModel.DataAnnotations;
 
 namespace ApiHospital.Controllers.Entidades
