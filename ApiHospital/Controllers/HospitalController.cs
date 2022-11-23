@@ -1,8 +1,10 @@
 ﻿using ApiHospital.Controllers.Entidades;
+using ApiHospital.Filtros;
+using ApiHospital.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-
+using RouteAttribute = Microsoft.AspNetCore.Mvc.RouteAttribute;
 
 namespace ApiHospital.Controllers
 {
@@ -15,22 +17,22 @@ namespace ApiHospital.Controllers
         private readonly ServiceTransient serviceTransient;
         private readonly ServiceScoped serviceScoped;
         private readonly ServiceSingleton serviceSingleton;
-        private readonly ILogger<AlumnosController> logger;
+        private readonly ILogger<PacienteController> logger;
         private readonly IWebHostEnvironment env;
-        private readonly string nuevosRegistros = "nuevosRegistros.txt";
-        private readonly string registrosConsultados = "registrosConsultados.txt";
+        //private readonly string nuevosRegistros = "nuevosRegistros.txt";
+        //private readonly string registrosConsultados = "registrosConsultados.txt";
 
         public HospitalController(ApplicationDbContext context, IService service,
-            ServiceTransient serviceTransient, ServiceScoped serviceScoped,
-            ServiceSingleton serviceSingleton, ILogger<AlumnosController> logger,
+            ServiceTransient serviceTransient, IServiceScope serviceScoped,
+            ServiceSingleton serviceSingleton, ILogger<HospitalController> logger,
             IWebHostEnvironment env)
         {
             this.dbContext = context;
             this.service = service;
             this.serviceTransient = serviceTransient;
-            this.serviceScoped = serviceScoped;
+            this.serviceScoped = (ServiceScoped)serviceScoped;
             this.serviceSingleton = serviceSingleton;
-            this.logger = logger;
+            this.logger = (ILogger<PacienteController>)logger;
             this.env = env;
         }
         [HttpGet("GUID")]
@@ -51,7 +53,6 @@ namespace ApiHospital.Controllers
             });
         }
 
-        public ApplicationDbContext dbContext { get; }
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Hospital>> GetById(int id)
         {
@@ -62,16 +63,7 @@ namespace ApiHospital.Controllers
             }
             return Ok(idAux);
         }
-        [HttpGet("{nombreHospital}")]
-        public async Task<ActionResult<Hospital>> Get(string nombreHospital)
-        {
-            var nombreAux= await dbContext.Hospitales.Include(a => a.Pacientes).FirstOrDefaultAsync(a => a.NombreHospital.Contains(nombreHospital));
-            if (nombreAux == null)
-            {
-                return NotFound();
-            }
-            return Ok(nombreAux);
-        }
+       
         [HttpGet("{id:int}/{nombreHospital?}")]
         public async Task<ActionResult<Hospital>> Get(int id, string nombreHospital)
         {
@@ -88,18 +80,30 @@ namespace ApiHospital.Controllers
 
             return await dbContext.Hospitales.Include(a=> a.Pacientes).ToListAsync();
         }
+        [HttpGet("obtenerNombreHospital/{nombreHospital}")]
+        public async Task<ActionResult<Hospital>> Get([FromRoute] string nombreHospital)
+        {
+            var hospital = await dbContext.Hospitales.FirstOrDefaultAsync(a => a.NombreHospital.Contains(nombreHospital));
+            if(hospital == null)
+            {
+                return NotFound();
+            }
+            return hospital;
+        }
+
         [HttpPost] 
         public async Task<ActionResult> Post(Hospital hospital)
         {
             var existeNombre = await dbContext.Hospitales.AnyAsync(a => a.NombreHospital == hospital.NombreHospital);
             if (existeNombre)
             {
-                return BadRequest("Ya existe un hospital con el nombre proporcionado")
+                return BadRequest("Ya existe un hospital con el nombre proporcionado");
             }
             dbContext.Add(hospital);
             await dbContext.SaveChangesAsync();
             return Ok();
         }
+
         [HttpPut("{id:int}")]
         public async Task<ActionResult> Put(Hospital hospital, int id)
         {
