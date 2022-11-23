@@ -1,10 +1,14 @@
 ﻿using ApiHospital.Controllers.Entidades;
 using ApiHospital.Filtros;
 using ApiHospital.Services;
+using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using RouteAttribute = Microsoft.AspNetCore.Mvc.RouteAttribute;
+using ApiHospital.DTOs;
 
 namespace ApiHospital.Controllers
 {
@@ -13,115 +17,87 @@ namespace ApiHospital.Controllers
     public class HospitalController : ControllerBase
     {
         private readonly ApplicationDbContext dbContext;
-        private readonly IService service;
-        private readonly ServiceTransient serviceTransient;
-        private readonly ServiceScoped serviceScoped;
-        private readonly ServiceSingleton serviceSingleton;
-        private readonly ILogger<PacienteController> logger;
-        private readonly IWebHostEnvironment env;
-        //private readonly string nuevosRegistros = "nuevosRegistros.txt";
-        //private readonly string registrosConsultados = "registrosConsultados.txt";
+        private readonly IMapper mapper;
 
-        public HospitalController(ApplicationDbContext context, IService service,
-            ServiceTransient serviceTransient, IServiceScope serviceScoped,
-            ServiceSingleton serviceSingleton, ILogger<HospitalController> logger,
-            IWebHostEnvironment env)
+        public HospitalController(ApplicationDbContext context, IMapper mapper)
         {
             this.dbContext = context;
-            this.service = service;
-            this.serviceTransient = serviceTransient;
-            this.serviceScoped = (ServiceScoped)serviceScoped;
-            this.serviceSingleton = serviceSingleton;
-            this.logger = (ILogger<PacienteController>)logger;
-            this.env = env;
-        }
-        [HttpGet("GUID")]
-        [ResponseCache(Duration = 10)]
-        [ServiceFilter(typeof(FiltroDeAccion))]
-        public ActionResult ObtenerGuid()
-        {
-            throw new NotImplementedException();
-            logger.LogInformation("Durante la ejecucion");
-            return Ok(new
-            {
-                AlumnosControllerTransient = serviceTransient.guid,
-                ServiceA_Transient = service.GetTransient(),
-                AlumnosControllerScoped = serviceScoped.guid,
-                ServiceA_Scoped = service.GetScoped(),
-                AlumnosControllerSingleton = serviceSingleton.guid,
-                ServiceA_Singleton = service.GetSingleton()
-            });
+            this.mapper = mapper;
         }
 
-        [HttpGet("{id:int}")]
-        public async Task<ActionResult<Hospital>> GetById(int id)
-        {
-            var idAux= await dbContext.Hospitales.Include(a => a.Pacientes).FirstOrDefaultAsync(a => a.IdHospital == id);
-            if (idAux == null)
-            {
-                return NotFound();
-            }
-            return Ok(idAux);
-        }
-       
-        [HttpGet("{id:int}/{nombreHospital?}")]
-        public async Task<ActionResult<Hospital>> Get(int id, string nombreHospital)
-        {
-            var aux = await dbContext.Hospitales.Include(a => a.Pacientes).FirstOrDefaultAsync(a => a.IdHospital==id || a.NombreHospital.Contains(nombreHospital));
-            if (aux == null)
-            {
-                return NotFound();
-            }
-            return Ok(aux);
-        }
         [HttpGet]
-        public async Task<ActionResult<List<Hospital>>> Get()
+        //[AllowAnonymous]
+        public async Task <ActionResult<List<GetHospitalDTO>>>Get()
         {
-
-            return await dbContext.Hospitales.Include(a=> a.Pacientes).ToListAsync();
+            var hospitales = await dbContext.Hospitales.ToListAsync();
+            return mapper.Map<List<GetHospitalDTO>>(hospitales);
         }
-        [HttpGet("obtenerNombreHospital/{nombreHospital}")]
-        public async Task<ActionResult<Hospital>> Get([FromRoute] string nombreHospital)
+
+        [HttpGet("{id:int}", Name ="obtenerHospital")]
+        public async Task<ActionResult<HospitalDTOConPacientes>> Get(int id)
         {
-            var hospital = await dbContext.Hospitales.FirstOrDefaultAsync(a => a.NombreHospital.Contains(nombreHospital));
-            if(hospital == null)
+            var hospitalAux= await dbContext.Hospitales
+                .Include(hospitalDB => hospitalDB.HospitalPaciente) //Trae la info de la relacion de las clases
+                .ThenInclude(hospitalPacienteDB => hospitalPacienteDB.PacienteId) //obtener el objeto de clase que se consulta
+                .FirstOrDefaultAsync(hospitalDB => hospitalDB.IdHospital==id);//El primero
+
+
+            if (hospitalAux == null)
             {
                 return NotFound();
             }
-            return hospital;
+            return Ok(hospitalAux);
+        }
+        [HttpGet("{nombre}")]
+        public async Task<ActionResult<List<GetHospitalDTO>>> Get([FromRoute] string nombreHospital)
+        {
+            var hospitalesAux = await dbContext.Hospitales.Where(hospitalDB => hospitalDB.NombreHospital.Contains(nombreHospital)).ToListAsync();
+            return mapper.Map<List<GetHospitalDTO>>(hospitalesAux);
         }
 
         [HttpPost] 
-        public async Task<ActionResult> Post(Hospital hospital)
+        public async Task<ActionResult> Post([FromBody] HospitalDTO hospitalDTO)
         {
-            var existeNombre = await dbContext.Hospitales.AnyAsync(a => a.NombreHospital == hospital.NombreHospital);
+            var existeNombre = await dbContext.Hospitales.AnyAsync(a => a.NombreHospital == hospitalDTO.NombreHospital);
             if (existeNombre)
             {
-                return BadRequest("Ya existe un hospital con el nombre proporcionado");
+                return BadRequest($"Ya existe un hospital con el nombre {hospitalDTO.NombreHospital}");
             }
-            dbContext.Add(hospital);
+           
+            
+            var hospitalAux = mapper.Map<Hospital>(hospitalDTO);
+            dbContext.Add(hospitalAux);
             await dbContext.SaveChangesAsync();
             return Ok();
         }
 
         [HttpPut("{id:int}")]
-        public async Task<ActionResult> Put(Hospital hospital, int id)
+        public async Task<ActionResult> Put(HospitalDTO hospitalCreacionDTO, int id)
         {
+            var existe = await dbContext.Hospitales.AnyAsync(a => a.IdHospital == id);
            
-           
-            if (hospital.IdHospital != id)
+            if (!existe)
             {
-                return BadRequest("El id del no coincide con el de la url.");
+                return NotFound();
             }
-            dbContext.Update(hospital);
+            var hospitalAux = mapper.Map<Hospital>(hospitalCreacionDTO);
+            hospitalAux.IdHospital = id;
+            dbContext.Update(hospitalAux);
             await dbContext.SaveChangesAsync();
             return Ok();
         }
+
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var hospitalDelete = await dbContext.Hospitales.FindAsync(id);
-            dbContext.Hospitales.Remove(hospitalDelete);
+            var existe = await dbContext.Hospitales.AnyAsync(a => a.IdHospital == id);
+            if (!existe)
+            {
+                return NotFound("El recurso no fue encontrado");
+            }
+            dbContext.Hospitales.Remove(new Hospital(){
+                IdHospital = id
+            });
             await dbContext.SaveChangesAsync();
             return Ok();
         }
