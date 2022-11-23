@@ -15,32 +15,39 @@ namespace ApiHospital.Controllers.Entidades
         
         public string NombreHospital { get; set; }
         public List<Paciente> Pacientes { get; set; }
-        [NotMapped]
-        public int Menor { get; set; }
-        [NotMapped]
-        public int Mayor { get; set; }
 
-        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-        {
-            //Para que se ejecuten debe de primero cumplirse con las reglas por Atributo Ejemplo: Range
-            // Tomar a consideración que primero se ejecutaran las validaciones mappeadas en los atributos
-            // y posteriormente las declaradas en la entidad
-            if (!string.IsNullOrEmpty(NombreHospital))
-            {
-                var primeraLetra = NombreHospital[0].ToString();
 
-                if (primeraLetra != primeraLetra.ToUpper())
-                {
-                    yield return new ValidationResult("La primera letra debe ser mayuscula",
-                        new String[] { nameof(NombreHospital) });
-                }
-            }
 
-            if (Menor > Mayor)
-            {
-                yield return new ValidationResult("Este valor no puede ser mas grande que el campo Mayor",
-                    new String[] { nameof(Menor) });
-            }
-        }
+
+        //Se pueden añadir las validaciones dentro de las entidades
+        //
+        //
+        //[NotMapped]
+        //public int Menor { get; set; }
+        //[NotMapped]
+        //public int Mayor { get; set; }
+
+        //public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        //{
+        //    //Para que se ejecuten debe de primero cumplirse con las reglas por Atributo Ejemplo: Range
+        //    // Tomar a consideración que primero se ejecutaran las validaciones mappeadas en los atributos
+        //    // y posteriormente las declaradas en la entidad
+        //    if (!string.IsNullOrEmpty(NombreHospital))
+        //    {
+        //        var primeraLetra = NombreHospital[0].ToString();
+
+        //        if (primeraLetra != primeraLetra.ToUpper())
+        //        {
+        //            yield return new ValidationResult("La primera letra debe ser mayuscula",
+        //                new String[] { nameof(NombreHospital) });
+        //        }
+        //    }
+
+        //    if (Menor > Mayor)
+        //    {
+        //        yield return new ValidationResult("Este valor no puede ser mas grande que el campo Mayor",
+        //            new String[] { nameof(Menor) });
+        //    }
+        //}
     }
 }
