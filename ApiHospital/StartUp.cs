@@ -84,14 +84,14 @@ namespace ApiHospital
 
             services.AddAutoMapper(typeof(Startup));
 
-            //services.AddIdentity<IdentityUser, IdentityRole>()
-            //    .AddEntityFrameworkStores<ApplicationDbContext>()
-            //    .AddDefaultTokenProviders();
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
 
             services.AddAuthorization(opciones =>
             {
                 opciones.AddPolicy("EsAdmin", politica => politica.RequireClaim("esAdmin"));
-                opciones.AddPolicy("EsAlumno", politica => politica.RequireClaim("esAlumno"));
+                opciones.AddPolicy("EsUser", politica => politica.RequireClaim("esUSer"));
             });
 
             services.AddCors(opciones =>
@@ -99,7 +99,6 @@ namespace ApiHospital
                 opciones.AddDefaultPolicy(builder =>
                 {
                     builder.WithOrigins("https://apirequest.io").AllowAnyMethod().AllowAnyHeader();
-                    //builder.WithOrigins("https://google.com").AllowAnyMethod().AllowAnyHeader();
                     //
                 });
             });

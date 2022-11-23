@@ -7,6 +7,7 @@ namespace ApiHospital.Controllers.Entidades
 {
     public class Paciente
     {
+        [Key]
         public int IdPaciente { get; set; }
         [Required(ErrorMessage ="El Id del Paciente es obligatorio")]
         public int HospitalId { get; set; }

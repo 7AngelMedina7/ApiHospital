@@ -9,11 +9,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using RouteAttribute = Microsoft.AspNetCore.Mvc.RouteAttribute;
 using ApiHospital.DTOs;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace ApiHospital.Controllers
 {
     [ApiController]
     [Route("/Hospital")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
+
     public class HospitalController : ControllerBase
     {
         private readonly ApplicationDbContext dbContext;
@@ -26,7 +29,7 @@ namespace ApiHospital.Controllers
         }
 
         [HttpGet]
-        //[AllowAnonymous]
+        [AllowAnonymous]
         public async Task <ActionResult<List<GetHospitalDTO>>>Get()
         {
             var hospitales = await dbContext.Hospitales.ToListAsync();
