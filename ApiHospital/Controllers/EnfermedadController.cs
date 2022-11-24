@@ -11,15 +11,15 @@ using System.Xml.Linq;
 namespace ApiHospital.Controllers
 {
     [ApiController]
-    [Route("clases/{claseId:int}/cursos")]
+    [Route("enfermedades/{enfermedadID:int}/enfermedad")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public class CursosController : ControllerBase
+    public class EnfermedadController : ControllerBase
     {
         private readonly ApplicationDbContext dbContext;
         private readonly IMapper mapper;
         private readonly UserManager<IdentityUser> userManager;
 
-        public CursosController(ApplicationDbContext dbContext, IMapper mapper,
+        public EnfermedadController(ApplicationDbContext dbContext, IMapper mapper,
             UserManager<IdentityUser> userManager)
         {
             this.dbContext = dbContext;
@@ -30,8 +30,8 @@ namespace ApiHospital.Controllers
         [HttpGet]
         public async Task<ActionResult<List<EnfermedadDTO>>> Get(int pacienteId)
         {
-            var existeClase = await dbContext.Pacientes.AnyAsync(pacienteDB => pacienteDB.IdPaciente == pacienteId);
-            if (!existeClase)
+            var existePaciente = await dbContext.Pacientes.AnyAsync(pacienteDB => pacienteDB.IdPaciente == pacienteId);
+            if (!existePaciente)
             {
                 return NotFound();
             }
