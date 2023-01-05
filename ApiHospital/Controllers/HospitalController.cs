@@ -15,8 +15,8 @@ namespace ApiHospital.Controllers
 {
     [ApiController]
     [Route("/Hospital")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
-
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
+    [AllowAnonymous]
     public class HospitalController : ControllerBase
     {
         private readonly ApplicationDbContext dbContext;

@@ -27,7 +27,7 @@ namespace ApiHospital.Controllers
             this.userManager = userManager;
         }
 
-        [HttpGet]
+        [HttpGet("test")]
         public async Task<ActionResult<List<EnfermedadDTO>>> Get(int pacienteId)
         {
             var existePaciente = await dbContext.Pacientes.AnyAsync(pacienteDB => pacienteDB.IdPaciente == pacienteId);
